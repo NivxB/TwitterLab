@@ -5,6 +5,9 @@
  */
 package twitterlab;
 
+import javax.security.auth.login.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
+
 /**
  *
  * @author kbarahona
@@ -16,6 +19,11 @@ public class TwitterLab {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        
+        
+        ConfigurationBuilder cb = new ConfigurationBuilder();
+        cb.setOAuthConsumerKey("yBSAPlE6wiAQU6CyIiXHSapwN");
+        cb.setOAuthConsumerSecret("3CjbEkYyIZvNZ07KYpC55v9vpqxoNmMs1IkC48Wqr5tKXjUnZk");
     }
     
 }
