@@ -8,6 +8,7 @@ package twitterlab;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import twitter4j.IDs;
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
@@ -49,8 +50,9 @@ public class TwitterLab {
             }
             ResponseList<User> Friends = tw.lookupUsers(ID);
             User[] A = new User[10];
-            Users.add(new ArrayList(Arrays.asList(Friends.toArray(A))));
-
+            if (Friends.toArray().length > 0) {
+                Users.add(new ArrayList(Arrays.asList(Friends.toArray(A))));
+            }
             for (int i = 0; i < ID.length; i++) {
                 IDs idsFriend = tw.getFriendsIDs(ID[i], -1);
                 long[] IDfriend;
@@ -62,9 +64,11 @@ public class TwitterLab {
                 }
                 ResponseList<User> FriendsFriend = tw.lookupUsers(IDfriend);
                 A = new User[10];
-                Users.add(new ArrayList(Arrays.asList(FriendsFriend.toArray(A))));
+                if (FriendsFriend.toArray().length > 0) {
+                    Users.add(new ArrayList(Arrays.asList(FriendsFriend.toArray(A))));
+                }
                 //System.out.println("Sleep?");
-                //Thread.sleep(10000);
+                TimeUnit.SECONDS.sleep(60);
             }
 
             for (int i = 0; i < Users.size(); i++) {
@@ -74,6 +78,7 @@ public class TwitterLab {
             }
 
         } catch (Exception e) {
+            // Thread.currentThread().interrupt();
             e.printStackTrace();
         }
 
