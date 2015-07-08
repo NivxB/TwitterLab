@@ -6,6 +6,10 @@
 package twitterlab;
 
 import javax.security.auth.login.Configuration;
+import twitter4j.IDs;
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
+import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
 
 /**
@@ -24,6 +28,16 @@ public class TwitterLab {
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setOAuthConsumerKey("yBSAPlE6wiAQU6CyIiXHSapwN");
         cb.setOAuthConsumerSecret("3CjbEkYyIZvNZ07KYpC55v9vpqxoNmMs1IkC48Wqr5tKXjUnZk");
+        cb.setOAuthAccessToken("858371720-0RASIMJeaMbWr2YPmCPyh5OgCP6Kesgz0WvdsLz7");
+        cb.setOAuthAccessTokenSecret("cfi5JDGLTUOKHNj7yFIdivg0Hr1bCml3VlQXj5XCOyoFr");
+        
+        try{
+            TwitterFactory tf = new TwitterFactory(cb.build());
+            Twitter tw = tf.getInstance();
+            IDs ids = tw.getFriendsIDs(-1);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
     
 }
