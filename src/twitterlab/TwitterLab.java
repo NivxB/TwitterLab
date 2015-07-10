@@ -7,12 +7,13 @@ package twitterlab;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import javax.security.auth.login.Configuration;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import twitter4j.IDs;
+import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.User;
-import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
 
 /**
@@ -21,14 +22,14 @@ import twitter4j.conf.ConfigurationBuilder;
  */
 public class TwitterLab {
 
-    private static ArrayList<ArrayList<Long>> IDs;
+    private static ArrayList<ArrayList<User>> Users;
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        IDs = new ArrayList();
+        Users = new ArrayList();
 
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setOAuthConsumerKey("yBSAPlE6wiAQU6CyIiXHSapwN");
@@ -40,20 +41,47 @@ public class TwitterLab {
             TwitterFactory tf = new TwitterFactory(cb.build());
             Twitter tw = tf.getInstance();
             IDs ids = tw.getFriendsIDs(-1);
-            ArrayList<Long> MyFriends = new ArrayList(Arrays.asList(ids.getIDs()));
-            IDs.add(MyFriends);
-            
-            for (int i = 0; i < 2; i++) {
-                User friend = tw.showUser(ids.getIDs()[i]);
+            long[] ID;
+            if (ids.getIDs().length > 10) {
+                ID = new long[10];
+                System.arraycopy(ids.getIDs(), 0, ID, 0, 10);
+            } else {
+                ID = ids.getIDs();
+            }
+            ResponseList<User> Friends = tw.lookupUsers(ID);
+            User[] A = new User[10];
+            if (Friends.toArray().length > 0) {
+                Users.add(new ArrayList(Arrays.asList(Friends.toArray(A))));
+            }
+            for (int i = 0; i < ID.length; i++) {
+                IDs idsFriend = tw.getFriendsIDs(ID[i], -1);
+                long[] IDfriend;
+                if (idsFriend.getIDs().length > 10) {
+                    IDfriend = new long[10];
+                    System.arraycopy(idsFriend.getIDs(), 0, IDfriend, 0, 10);
+                } else {
+                    IDfriend = idsFriend.getIDs();
+                }
+                ResponseList<User> FriendsFriend = tw.lookupUsers(IDfriend);
+                A = new User[10];
+                if (FriendsFriend.toArray().length > 0) {
+                    Users.add(new ArrayList(Arrays.asList(FriendsFriend.toArray(A))));
+                }
+                //System.out.println("Sleep?");
+                TimeUnit.SECONDS.sleep(60);
+            }
 
-                IDs friendIds = tw.getFriendsIDs(friend.getScreenName(), -1);
-                System.out.println(friendIds);
-
+            for (int i = 0; i < Users.size(); i++) {
+                for (int j = 0; j < Users.get(0).size(); j++) {
+                    System.out.println(Users.get(i).get(j).getScreenName());
+                }
             }
 
         } catch (Exception e) {
+            // Thread.currentThread().interrupt();
             e.printStackTrace();
         }
+
     }
 
 }
